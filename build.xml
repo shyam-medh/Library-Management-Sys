@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="LibraryManagementSystem" default="run" basedir=".">
+    <description>Library Management System - Ant Build File</description>
+    
+    <!-- Properties -->
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="dist.dir" value="dist"/>
+    <property name="jar.name" value="LibraryManagementSystem.jar"/>
+    <property name="main.class" value="Loading1"/>
+    
+    <!-- Classpath -->
+    <path id="classpath">
+        <fileset dir="${lib.dir}" includes="*.jar" erroronmissingdir="false"/>
+    </path>
+    
+    <!-- Clean target -->
+    <target name="clean" description="Clean build directories">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+    
+    <!-- Create directories -->
+    <target name="init" description="Create required directories">
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${lib.dir}"/>
+    </target>
+    
+    <!-- Compile target -->
+    <target name="compile" depends="init" description="Compile Java source files">
+        <javac srcdir="${src.dir}" 
+               destdir="${classes.dir}" 
+               classpathref="classpath"
+               includeantruntime="false"
+               debug="true"
+               encoding="UTF-8">
+            <compilerarg value="-Xlint:unchecked"/>
+        </javac>
+    </target>
+    
+    <!-- Create JAR -->
+    <target name="jar" depends="compile" description="Create executable JAR">
+        <jar destfile="${dist.dir}/${jar.name}" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main.class}"/>
+                <attribute name="Class-Path" value="lib/mysql-connector-j-9.5.0.jar"/>
+            </manifest>
+        </jar>
+        <!-- Copy library files to dist -->
+        <copy todir="${dist.dir}/lib" failonerror="false">
+            <fileset dir="${lib.dir}" includes="*.jar"/>
+        </copy>
+    </target>
+    
+    <!-- Run application -->
+    <target name="run" depends="compile" description="Run the application">
+        <java classname="${main.class}" fork="true" classpathref="classpath">
+            <classpath>
+                <pathelement location="${classes.dir}"/>
+            </classpath>
+        </java>
+    </target>
+    
+    <!-- Run from JAR -->
+    <target name="run-jar" depends="jar" description="Run from JAR file">
+        <java jar="${dist.dir}/${jar.name}" fork="true">
+            <classpath>
+                <fileset dir="${dist.dir}/lib" includes="*.jar" erroronmissingdir="false"/>
+            </classpath>
+        </java>
+    </target>
+    
+    <!-- Full build -->
+    <target name="all" depends="clean,jar" description="Clean and build everything"/>
+    
+</project>
