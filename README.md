@@ -66,13 +66,13 @@ mysql -u root -p < databaseOfLibrary/library2.sql
    ```
 
 ### 2. Configure Database Connection
-
-Edit `src/Connect.java` if your MySQL credentials differ:
-
+ 
+Edit `src/Connect.java` with **YOUR** MySQL credentials:
+ 
 ```java
 private static final String URL = "jdbc:mysql://localhost:3306/library2";
 private static final String USERNAME = "root";
-private static final String PASSWORD = "@Qwerty123";
+private static final String PASSWORD = "YOUR_PASSWORD"; // Update this!
 ```
 
 ### 3. Compile and Run
