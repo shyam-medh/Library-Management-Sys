@@ -23,6 +23,22 @@ INSERT INTO admin (USER_ID, NAME, PASSWORD, CONTACT) VALUES
 ('librarian', 'Head Librarian', 'lib@2024', '8765432109');
 
 -- ============================================
+-- TABLE: users - Regular user accounts
+-- ============================================
+CREATE TABLE users (
+    USER_ID VARCHAR(50) PRIMARY KEY,
+    NAME VARCHAR(100) NOT NULL,
+    PASSWORD VARCHAR(100) NOT NULL,
+    CONTACT VARCHAR(50),
+    CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert sample users
+INSERT INTO users (USER_ID, NAME, PASSWORD, CONTACT) VALUES
+('john_doe', 'John Doe', 'password123', '9876543210'),
+('jane_smith', 'Jane Smith', 'securepass', '8765432109');
+
+-- ============================================
 -- TABLE: book - Book catalog
 -- ============================================
 CREATE TABLE book (

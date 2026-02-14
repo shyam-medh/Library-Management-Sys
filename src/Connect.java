@@ -12,7 +12,7 @@ public class Connect {
     // Database configuration
     private static final String URL = "jdbc:mysql://localhost:3306/library2";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "@Qwerty123";
+    private static final String PASSWORD = "#123$";
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     
     /**

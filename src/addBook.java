@@ -1,4 +1,8 @@
 import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.swing.plaf.basic.BasicComboPopup;
+import javax.swing.plaf.basic.ComboPopup;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
@@ -10,108 +14,251 @@ public class addBook extends JFrame implements ActionListener {
     private JLabel messageLabel;
     
     private final Color DARK_BG = new Color(18, 18, 30);
-    private final Color CARD_BG = new Color(40, 40, 65);
-    private final Color FIELD_BG = new Color(45, 45, 70);
+    private final Color FIELD_BG = new Color(50, 50, 80);
     private final Color ACCENT_GREEN = new Color(52, 199, 89);
     private final Color TEXT_WHITE = new Color(255, 255, 255);
-    private final Color TEXT_GRAY = new Color(180, 180, 200);
+    private final Color TEXT_GRAY = new Color(170, 170, 190);
+    private final Color PLACEHOLDER_COLOR = new Color(150, 150, 170);
     
     private final String[] CATEGORIES = {"Select Category", "Fiction", "Science", "Technology", "Biography", "Fantasy", "Romance", "Mystery", "Education", "Novel"};
     
     public addBook() {
         setTitle("Add New Book");
-        setSize(600, 700);
+        setSize(600, 750);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
+        setMinimumSize(new Dimension(500, 700)); // Ensure it doesn't get too small
         createUI();
     }
     
     private void createUI() {
-        JPanel mainPanel = new JPanel() {
+        JPanel mainPanel = new JPanel(new GridBagLayout()) {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
                 g2d.setPaint(new GradientPaint(0, 0, DARK_BG, 0, getHeight(), new Color(25, 25, 45)));
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         };
-        mainPanel.setLayout(null);
+        setContentPane(mainPanel);
         
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 20, 5, 20); // Top, Left, Bottom, Right
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        gbc.gridx = 0; 
+        gbc.gridy = 0;
+        
+        // Title
         JLabel title = new JLabel("➕ Add New Book", SwingConstants.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 28));
         title.setForeground(TEXT_WHITE);
-        title.setBounds(0, 40, 600, 40);
-        mainPanel.add(title);
+        gbc.insets = new Insets(20, 20, 30, 20);
+        mainPanel.add(title, gbc);
         
-        int y = 120;
-        mainPanel.add(createLabel("Book ID", 100, y));
-        bookIdField = createField(); bookIdField.setBounds(100, y + 25, 400, 45);
-        mainPanel.add(bookIdField);
+        gbc.insets = new Insets(5, 40, 5, 40); // Tighter insets for fields
         
-        y += 85;
-        mainPanel.add(createLabel("Category", 100, y));
+        // Book ID
+        gbc.gridy++;
+        mainPanel.add(createLabel("Book ID"), gbc);
+        gbc.gridy++;
+        bookIdField = new PlaceholderTextField("Enter Book ID (e.g. B001)"); 
+        bookIdField.setPreferredSize(new Dimension(0, 45));
+        mainPanel.add(bookIdField, gbc);
+        
+        // Category
+        gbc.gridy++;
+        mainPanel.add(createLabel("Category"), gbc);
+        gbc.gridy++;
         categoryCombo = new JComboBox<>(CATEGORIES);
-        styleCombo(categoryCombo);
-        categoryCombo.setBounds(100, y + 25, 400, 45);
-        mainPanel.add(categoryCombo);
+        styleCombo(categoryCombo, "Select Category");
+        categoryCombo.setPreferredSize(new Dimension(0, 45));
+        mainPanel.add(categoryCombo, gbc);
         
-        y += 85;
-        mainPanel.add(createLabel("Book Name", 100, y));
-        bookNameField = createField(); bookNameField.setBounds(100, y + 25, 400, 45);
-        mainPanel.add(bookNameField);
+        // Book Name
+        gbc.gridy++;
+        mainPanel.add(createLabel("Book Name"), gbc);
+        gbc.gridy++;
+        bookNameField = new PlaceholderTextField("Enter Title of the Book"); 
+        bookNameField.setPreferredSize(new Dimension(0, 45));
+        mainPanel.add(bookNameField, gbc);
         
-        y += 85;
-        mainPanel.add(createLabel("Author Name", 100, y));
-        authorField = createField(); authorField.setBounds(100, y + 25, 400, 45);
-        mainPanel.add(authorField);
+        // Author
+        gbc.gridy++;
+        mainPanel.add(createLabel("Author Name"), gbc);
+        gbc.gridy++;
+        authorField = new PlaceholderTextField("Enter Author Name"); 
+        authorField.setPreferredSize(new Dimension(0, 45));
+        mainPanel.add(authorField, gbc);
         
-        y += 85;
-        mainPanel.add(createLabel("Number of Copies", 100, y));
-        copiesField = createField(); copiesField.setBounds(100, y + 25, 400, 45);
-        mainPanel.add(copiesField);
+        // Copies
+        gbc.gridy++;
+        mainPanel.add(createLabel("Number of Copies"), gbc);
+        gbc.gridy++;
+        copiesField = new PlaceholderTextField("Enter Quantity (e.g. 5)"); 
+        copiesField.setPreferredSize(new Dimension(0, 45));
+        mainPanel.add(copiesField, gbc);
         
-        messageLabel = new JLabel("", SwingConstants.CENTER);
+        // Message
+        gbc.gridy++;
+        gbc.insets = new Insets(15, 40, 15, 40);
+        messageLabel = new JLabel(" ", SwingConstants.CENTER);
         messageLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        messageLabel.setBounds(100, 560, 400, 25);
-        mainPanel.add(messageLabel);
+        mainPanel.add(messageLabel, gbc);
         
-        addButton = createBtn("Add Book", ACCENT_GREEN); addButton.setBounds(100, 600, 120, 45);
-        clearButton = createBtn("Clear", new Color(66, 133, 244)); clearButton.setBounds(240, 600, 120, 45);
-        backButton = createBtn("Back", new Color(100, 100, 130)); backButton.setBounds(380, 600, 120, 45);
-        mainPanel.add(addButton); mainPanel.add(clearButton); mainPanel.add(backButton);
+        // Buttons
+        gbc.gridy++;
+        JPanel btnPanel = new JPanel(new GridLayout(1, 3, 15, 0));
+        btnPanel.setOpaque(false);
         
-        setContentPane(mainPanel);
+        addButton = createBtn("Add Book", ACCENT_GREEN); 
+        clearButton = createBtn("Clear", new Color(66, 133, 244)); 
+        backButton = createBtn("Back", new Color(100, 100, 130)); 
+        
+        btnPanel.add(addButton);
+        btnPanel.add(clearButton);
+        btnPanel.add(backButton);
+        
+        btnPanel.setPreferredSize(new Dimension(0, 45));
+        mainPanel.add(btnPanel, gbc);
     }
     
-    private JLabel createLabel(String text, int x, int y) {
+    private JLabel createLabel(String text) {
         JLabel lbl = new JLabel(text);
         lbl.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         lbl.setForeground(TEXT_GRAY);
-        lbl.setBounds(x, y, 200, 20);
         return lbl;
     }
     
-    private JTextField createField() {
-        JTextField f = new JTextField();
-        f.setBackground(FIELD_BG);
-        f.setForeground(TEXT_WHITE);
-        f.setCaretColor(TEXT_WHITE);
-        f.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(70,70,100)), BorderFactory.createEmptyBorder(10,15,10,15)));
-        f.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        return f;
+    // ... [Rest of the class methods: PlaceholderTextField, styleCombo, createBtn, actionPerformed, etc.] ...
+    // To save context space, I will re-include the necessary inner classes/methods fully.
+    
+    class PlaceholderTextField extends JTextField {
+        private String placeholder;
+        public PlaceholderTextField(String placeholder) {
+            this.placeholder = placeholder;
+            setBackground(FIELD_BG);
+            setForeground(PLACEHOLDER_COLOR);
+            setCaretColor(TEXT_WHITE);
+            setBorder(BorderFactory.createCompoundBorder(
+                new LineBorder(new Color(70, 70, 100), 1), 
+                new EmptyBorder(10, 15, 10, 15)
+            ));
+            setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            setText(placeholder);
+            
+            addFocusListener(new FocusAdapter() {
+                public void focusGained(FocusEvent e) {
+                    if (getText().equals(placeholder)) {
+                        setText("");
+                        setForeground(TEXT_WHITE);
+                        setBorder(BorderFactory.createCompoundBorder(new LineBorder(ACCENT_GREEN, 2), new EmptyBorder(10, 15, 10, 15)));
+                    }
+                }
+                public void focusLost(FocusEvent e) {
+                    if (getText().isEmpty()) {
+                        setText(placeholder);
+                        setForeground(PLACEHOLDER_COLOR);
+                        setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(70, 70, 100), 1), new EmptyBorder(10, 15, 10, 15)));
+                    } else {
+                        setBorder(BorderFactory.createCompoundBorder(new LineBorder(new Color(70, 70, 100), 1), new EmptyBorder(10, 15, 10, 15)));
+                    }
+                }
+            });
+        }
+        public String getText() { return super.getText().equals(placeholder) ? "" : super.getText(); }
     }
     
-    private void styleCombo(JComboBox<String> c) {
-        c.setBackground(new Color(60, 60, 90));
-        c.setForeground(new Color(255, 255, 255));
+    private void styleCombo(JComboBox<String> c, String placeholder) {
         c.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        c.setBorder(BorderFactory.createLineBorder(new Color(80, 80, 120)));
+        c.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 100)));
+        c.setBackground(FIELD_BG);
+        c.setForeground(TEXT_WHITE);
+        c.setOpaque(false);
+        
+        c.setUI(new BasicComboBoxUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                g.setColor(FIELD_BG);
+                g.fillRect(0, 0, c.getWidth(), c.getHeight());
+                super.paint(g, c);
+            }
+
+            @Override
+            protected JButton createArrowButton() {
+                JButton btn = new JButton() {
+                    @Override
+                    public void paint(Graphics g) {
+                        Graphics2D g2 = (Graphics2D) g.create();
+                        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g2.setColor(FIELD_BG);
+                        g2.fillRect(0, 0, getWidth(), getHeight());
+                        g2.setColor(new Color(70, 70, 100));
+                        g2.drawLine(0, 5, 0, getHeight()-5);
+                        g2.setColor(TEXT_GRAY);
+                        int w = getWidth(), h = getHeight();
+                        int[] x = {w/2-5, w/2+5, w/2};
+                        int[] y = {h/2-3, h/2-3, h/2+3};
+                        g2.fillPolygon(x, y, 3);
+                        g2.dispose();
+                    }
+                };
+                btn.setBorder(BorderFactory.createEmptyBorder());
+                btn.setContentAreaFilled(false);
+                btn.setFocusable(false);
+                return btn;
+            }
+
+            @Override
+            public void paintCurrentValueBackground(Graphics g, Rectangle bounds, boolean hasFocus) {
+                g.setColor(FIELD_BG);
+                g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+            }
+            
+            @Override
+            protected ComboPopup createPopup() {
+                BasicComboPopup popup = new BasicComboPopup(comboBox) {
+                    @Override
+                    protected JScrollPane createScroller() {
+                        JScrollPane scroller = super.createScroller();
+                        scroller.getViewport().setBackground(FIELD_BG);
+                        scroller.setBackground(FIELD_BG);
+                        scroller.setBorder(null);
+                        scroller.setVerticalScrollBar(new JScrollBar(JScrollBar.VERTICAL) {
+                            @Override
+                            public Dimension getPreferredSize() { return new Dimension(8, super.getPreferredSize().height); }
+                        });
+                        scroller.getVerticalScrollBar().setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
+                            protected void configureScrollBarColors() {
+                                this.thumbColor = new Color(80, 80, 120);
+                                this.trackColor = new Color(40, 40, 60);
+                            }
+                        });
+                        return scroller;
+                    }
+                };
+                popup.setBorder(BorderFactory.createLineBorder(new Color(70, 70, 100)));
+                return popup;
+            }
+        });
+        
         c.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                setBackground(isSelected ? new Color(66, 133, 244) : new Color(50, 50, 80));
-                setForeground(new Color(255, 255, 255));
+                
+                if (value != null && value.toString().equals(placeholder)) {
+                    setForeground(PLACEHOLDER_COLOR);
+                } else {
+                    setForeground(TEXT_WHITE);
+                }
+                
+                if (isSelected) {
+                    setBackground(ACCENT_GREEN);
+                } else {
+                    setBackground(FIELD_BG);
+                }
+                
                 setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
                 return this;
             }
@@ -164,8 +311,12 @@ public class addBook extends JFrame implements ActionListener {
     }
     
     private void clearFields() {
-        bookIdField.setText(""); categoryCombo.setSelectedIndex(0); bookNameField.setText("");
-        authorField.setText(""); copiesField.setText(""); messageLabel.setText("");
+        bookIdField.setText("Enter Book ID (e.g. B001)"); bookIdField.setForeground(PLACEHOLDER_COLOR);
+        categoryCombo.setSelectedIndex(0);
+        bookNameField.setText("Enter Title of the Book"); bookNameField.setForeground(PLACEHOLDER_COLOR);
+        authorField.setText("Enter Author Name"); authorField.setForeground(PLACEHOLDER_COLOR);
+        copiesField.setText("Enter Quantity (e.g. 5)"); copiesField.setForeground(PLACEHOLDER_COLOR);
+        messageLabel.setText(" ");
     }
     
     private void showMsg(String msg, boolean error) {

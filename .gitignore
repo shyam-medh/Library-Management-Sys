@@ -1,0 +1,4 @@
+build/
+*.class
+# Do not ignore jars in lib as they might be dependencies not managed by a package manager
+!lib/*.jar
