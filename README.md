@@ -116,20 +116,23 @@ java -cp "build/classes;lib/*" Loading1
 
 ## Screenshots
 
-| **Login Screen** | **Dashboard** |
-|:---:|:---:|
-| ![Login Screen](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) |
-| *Secure Login with New User Registration* | *Comprehensive Admin Dashboard* |
+### Login Screen
+![Login Screen](screenshots/login.png)
 
-| **Issue & Return Management** | **Real-time Tables** |
-|:---:|:---:|
-| ![Issue & Return](screenshots/issue_return.png) | ![Tables](screenshots/tables.png) |
-| *Manage Circulation Efficiently* | *View Available Books & Student History* |
+### User Sign Up
+![Sign Up](screenshots/signup.png)
 
-| **Data Entry Forms** | **User Sign Up** |
-|:---:|:---:|
-| ![Forms](screenshots/forms.png) | ![Sign Up](screenshots/signup.png) |
-| *Add Book & Student Registration* | *Modern User Onboarding* |
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Issue & Return Management
+![Issue & Return](screenshots/issue_return.png)
+
+### Real-time Tables
+![Tables](screenshots/tables.png)
+
+### Data Entry Forms
+![Forms](screenshots/forms.png)
 
 The application features a modern dark theme with:
 - Gradient backgrounds
