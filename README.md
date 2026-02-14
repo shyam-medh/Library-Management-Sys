@@ -5,11 +5,13 @@ A complete Java Swing-based library management system for managing books, studen
 ## Features
 
 - 🔐 **Secure Login System** - Admin authentication with MySQL database
+- 👤 **User Registration** - Detailed signup for new users
 - 📚 **Book Management** - Add and view books with availability tracking
-- 👤 **Student Registration** - Register and manage student records
+- 🎓 **Student Registration** - Register and manage student records
 - 📤 **Issue Books** - Issue books to registered students
 - 📥 **Return Books** - Process book returns with automatic inventory updates
 - 📊 **Real-time Views** - Live availability and student borrowing statistics
+- 🛠️ **Automated Setup** - Database initialization utility included
 
 ## Technology Stack
 
@@ -25,6 +27,8 @@ project-root/
 ├── src/
 │   ├── Connect.java          # Database connection factory
 │   ├── Loading1.java         # Login screen (entry point)
+│   ├── UserSignup.java       # User registration screen
+│   ├── SetupDatabase.java    # Database initialization utility
 │   ├── HomePage.java         # Main dashboard
 │   ├── addBook.java          # Add new books
 │   ├── availableBook.java    # View available books
@@ -33,11 +37,12 @@ project-root/
 │   ├── IssueBook.java        # Issue books
 │   └── ReturnBook.java       # Return books
 ├── build/
-│   └── classes/              # Compiled output
+│   └── classes/              # Compiled output (ignored by git)
 ├── lib/
 │   └── mysql-connector-j-9.5.0.jar
 ├── databaseOfLibrary/
 │   └── library2.sql          # Database schema + sample data
+├── run.bat                   # Quick run script (Windows)
 ├── build.xml                 # Ant build file
 ├── manifest.mf               # JAR manifest
 └── README.md
@@ -55,7 +60,10 @@ project-root/
 mysql -u root -p < databaseOfLibrary/library2.sql
 ```
 
-Or import via MySQL Workbench.
+4. (Optional) Run the setup utility to ensure tables exist:
+   ```bash
+   java -cp "build/classes;lib/*" SetupDatabase
+   ```
 
 ### 2. Configure Database Connection
 
@@ -67,57 +75,36 @@ private static final String USERNAME = "root";
 private static final String PASSWORD = "@Qwerty123";
 ```
 
-### 3. Download MySQL JDBC Driver
+### 3. Compile and Run
 
-Download MySQL Connector/J from:
-https://dev.mysql.com/downloads/connector/j/
-
-Place the JAR file in the `lib/` directory:
-```
-lib/mysql-connector-j-9.5.0.jar
-```
-
-### 4. Compile and Run
-
-#### Quick Commands (Windows PowerShell)
-
+#### Quick Start (Windows)
+Simply double-click **`run.bat`** or run in terminal:
 ```powershell
-# Navigate to project directory
-cd c:\Users\thisp\OneDrive\Desktop\sh
+.\run.bat
+```
 
-# COMPILE (run once after any code changes)
+#### Manual Compilation
+```powershell
+# Compile
 javac -d build/classes -cp "lib/*" src/*.java
 
-# RUN THE APPLICATION
+# Run
 java -cp "build/classes;lib/*" Loading1
-```
-
-#### One-liner to Run (after compiling once)
-```powershell
-cd c:\Users\thisp\OneDrive\Desktop\sh; java -cp "build/classes;lib/*" Loading1
-```
-
-#### Using Ant (alternative):
-
-```bash
-ant run      # Build and run
-ant jar      # Create JAR
-ant clean    # Clean build
 ```
 
 ## Default Login Credentials
 
-| Username | Password | Name |
+| Username | Password | Role |
 |----------|----------|------|
-| jonny@123 | #123$ | JONNY ROY |
+| jonny@123 | #123$ | User |
 | admin | admin123 | Administrator |
-| librarian | lib@2024 | Head Librarian |
 
 ## Database Schema
 
 ### Tables
 
-- **admin** - Login credentials (USER_ID, NAME, PASSWORD, CONTACT)
+- **admin** - Admin credentials (USER_ID, NAME, PASSWORD, CONTACT)
+- **users** - User accounts (USER_ID, NAME, PASSWORD, CONTACT, CREATED_AT)
 - **book** - Book catalog (BOOK_ID, CATEGORY, NAME, AUTHOR, COPIES, TOTAL_COPIES, STATUS)
 - **student** - Student registry (Stu_ID, NAME, CONTACT)
 - **issue** - Book issue tracking (ISSUE_ID, Stu_ID, BOOK_ID, ISSUE_DATE, RETURN_DATE)
